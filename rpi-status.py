@@ -39,10 +39,6 @@ except Exception as e:
   sys.exit(1)
 
 try: 
-  #epd.displayPartBaseImage(epd.getbuffer(buffer.image))
-
-  #buffer.text_in_spot(0,10,30,buffer.textheight,"Hq")
-  #epd.displayPartial(epd.getbuffer(buffer.image))
   while True:
     # if the current is negative, we are on ups power
     if ups.getCurrent_mA() > 0:
@@ -63,6 +59,9 @@ try:
     if args.image:
       buffer.show()
       sys.exit(0)
+    else:
+      epd.displayPartBaseImage(epd.getbuffer(buffer.image))
+      epd.displayPartial(epd.getbuffer(buffer.image))
 
     time.sleep(1)
 
