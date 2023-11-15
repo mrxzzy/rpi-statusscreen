@@ -1,0 +1,19 @@
+---
+- name: system config for rpi-statusscreen
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become_user: root
+  become: yes
+
+  tasks:
+
+    - name: install pip
+      ansible.builtin.apt:
+        name: python3-pip
+
+    - name: pip install epdlib
+      ansible.builtin.pip:
+        name: epdlib
+        extra_args: --break-system-packages
+

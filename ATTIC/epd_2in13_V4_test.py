@@ -2,8 +2,7 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
-picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
-print(picdir)
+picdir = './resources/'
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
@@ -52,7 +51,7 @@ try:
         
         # read bmp file 
         logging.info("2.read bmp file...")
-        image = Image.open(os.path.join(picdir, '2in13.bmp'))
+        image = Image.open(os.path.join(picdir, 'tux.png'))
         epd.display(epd.getbuffer(image))
         time.sleep(2)
         
@@ -60,7 +59,7 @@ try:
         logging.info("3.read bmp file on window...")
         # epd.Clear(0xFF)
         image1 = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
-        bmp = Image.open(os.path.join(picdir, '100x100.bmp'))
+        bmp = Image.open(os.path.join(picdir, 'tux.png'))
         image1.paste(bmp, (2,2))    
         epd.display(epd.getbuffer(image1))
         time.sleep(2)
@@ -90,7 +89,7 @@ try:
         
         # read bmp file 
         logging.info("2.read bmp file...")
-        image = Image.open(os.path.join(picdir, '2in13.bmp'))
+        image = Image.open(os.path.join(picdir, 'tux.png'))
         epd.display_fast(epd.getbuffer(image))
         time.sleep(2)
         
@@ -98,7 +97,7 @@ try:
         logging.info("3.read bmp file on window...")
         # epd.Clear(0xFF)
         image1 = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
-        bmp = Image.open(os.path.join(picdir, '100x100.bmp'))
+        bmp = Image.open(os.path.join(picdir, 'tux.png'))
         image1.paste(bmp, (2,2))    
         epd.display_fast(epd.getbuffer(image1))
         time.sleep(2)
@@ -112,7 +111,7 @@ try:
     num = 0
     while (True):
         time_draw.rectangle((120, 80, 220, 105), fill = 255)
-        time_draw.text((120, 80), time.strftime('%H:%M:%S'), font = font24, fill = 0, anchor = 'br')
+        time_draw.text((120, 80), time.strftime('%H:%M:%S'), font = font24, fill = 0)
         epd.displayPartial(epd.getbuffer(time_image))
         num = num + 1
         if(num == 10):
