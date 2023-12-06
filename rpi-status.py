@@ -30,7 +30,7 @@ def media_usage(path):
     usage = os.statvfs(path)
     return "Disk: %d%%" % ((1 - usage.f_bfree / usage.f_blocks) * 100)
   else:
-    return 'Not Mounted'
+    return 'No media'
 
 def when():
   return time.strftime('%H:%M:%S')
@@ -44,6 +44,7 @@ args = parser.parse_args()
 try:
   logging.basicConfig(level=logging.DEBUG)
 
+  logging.debug("Initializing e-paper display")
   if not args.image:
     epd = epd2in13_V4.EPD()
     epd.init()
@@ -55,12 +56,15 @@ try:
     width = 122
     height = 250
 
-  logging.info("init successful. display size: %s w, %s h" % (width, height))
+  logging.debug("display init successful. display size: %s w, %s h" % (width, height))
 
   buffer = DisplayBuilder.DisplayBuilder(height,width,args.font)
 
   # init UPS interface
+
+  logging.debug("initializing UPS.")
   ups = INA219.INA219(addr=0x43)
+  logging.debug("UPS initialization successful.")
 
 except Exception as e:
   logging.error("init failed: %s" % (e))
@@ -77,8 +81,13 @@ try:
 
     timelapse = Status.In('/tmp/rpi-timelapse.json').get()
     logging.debug(timelapse)
-    buffer.text_in_spot(0,103,str(timelapse['captures']))
-    buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+    if timelapse is not False:
+      buffer.text_in_spot(0,103,str(timelapse['captures']))
+      buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+    else:
+      y = 103
+      buffer.text_in_spot(0,y,str("No"))
+      buffer.text_in_spot(0,y + buffer.textheight,str("JSON"))
 
     if args.image:
       buffer.show()

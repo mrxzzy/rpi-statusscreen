@@ -23,8 +23,14 @@ class Out():
     self.path = path
     self.data = {}
 
-  def send(self):
-    self.data['last'] = time.time()
+  def send(self,data = None):
+    logging.debug(data)
+    if data is None:
+      data = self.data
+
+    data['last'] = time.time()
 
     with open(self.path, 'w') as f:
-      json.dump(self.data, f)
+      json.dump(data, f)
+
+    self.data = data

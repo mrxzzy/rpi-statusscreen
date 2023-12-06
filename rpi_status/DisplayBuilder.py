@@ -23,7 +23,8 @@ class DisplayBuilder:
     self.draw.line((0,100,122,100), fill = 0)
     self.draw.line((61,100,61,149), fill = 0)
     self.draw.line((0,149,122,149), fill = 0)
-    return self.image.rotate(180)
+    #return self.image.rotate(180)
+    return self.image
 
   def blank(self):
     self.draw.rectangle((0,0,self.height,self.width), fill = 1)
