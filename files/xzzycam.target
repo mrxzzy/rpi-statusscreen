@@ -1,0 +1,7 @@
+[Unit]
+Description=Statusscreen target, should run after OS is up.
+Requires=multi-user.target
+After=multi-user.target
+AllowIsolate=yes
+
+Wants=statusscreen.target

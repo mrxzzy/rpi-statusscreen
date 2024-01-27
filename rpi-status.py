@@ -39,7 +39,17 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-i', '--image', dest='image', action='store_true', help='For debugging purposes, display an image with pillow instead of refreshing the ePaper screen')
 parser.add_argument('-f', '--font', dest='font', default='/usr/share/fonts/xzzycam/DinaRemasterII.ttc', help='Specify path to font file to use.')
+parser.add_argument('-s', '--shutdown', action='store_true', help='Run with this option to blank the epaper screen.')
 args = parser.parse_args()
+
+if args.shutdown:
+  logging.basicConfig(level=logging.DEBUG)
+  logging.debug("Blanking e-paper in preparation for shutdown.")
+  epd = epd2in13_V4.EPD()
+  epd.init()
+  epd.Clear(0xFF)
+  epd.sleep()
+  sys.exit(0)
 
 try:
   logging.basicConfig(level=logging.DEBUG)
@@ -103,4 +113,3 @@ except (KeyboardInterrupt, SystemExit):
   if not args.image:
     epd.init()
     epd.Clear(0xFF)
-    epd.sleep()

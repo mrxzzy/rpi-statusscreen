@@ -1,0 +1,11 @@
+[Unit]
+Description=fires up the epaper screen.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/rpi-status.py
+ExecStopPost=/usr/local/bin/rpi-status.py --shutdown
+
+[Install]
+WantedBy=xzzycam.target
