@@ -16,5 +16,5 @@ apt update
 apt upgrade
 apt install ansible
 ansible-playbook configure.yaml
+python -m build --wheel
 ```
-

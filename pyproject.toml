@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["rpi_status"]
+
+[project]
+name = "rpi-status"
+requires-python = ">=3"
+version = "1.0.0"
+authors = [
+  { name = "xzzy", email = "nah@example.com" }
+]
+

@@ -26,6 +26,8 @@
           - python3-pip
           - python3-pillow
           - python3-smbus 
+          - python3-build
+          - python3.11-venv
           - silversearcher-ag
 
     - name: pip install epdlib
@@ -33,3 +35,55 @@
         name: epdlib
         extra_args: --break-system-packages
 
+    - name: pip install rpi_status
+      ansible.builtin.pip:
+        name: file:/home/sether/rpi-statusscreen/dist/rpi_status-1.0.0-py3-none-any.whl
+        extra_args: --break-system-packages
+
+    - name: install the font
+      ansible.builtin.copy:
+        src: resources/DinaRemasterII.ttc
+        dest: /usr/share/fonts/xzzycam/
+
+    - name: install statusscreen script
+      ansible.builtin.copy:
+        src: rpi-status.py
+        dest: /usr/local/bin/rpi-status.py
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: isnstall xzzycam target
+      ansible.builtin.copy:
+        src: xzzycam.target
+        dest: /etc/systemd/system/xzzycam.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: install statusscreen service
+      ansible.builtin.copy:
+        src: statusscreen.service
+        dest: /etc/systemd/system/statusscreen.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: reload systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: get current target
+      command: "systemctl get-default"
+      changed_when: false
+      register: systemdtarget
+
+    - name: set target
+      command: "systemctl set-default xzzycam.target"
+      when: "'xzzycam' not in systemdtarget.stdout"
+
+    - name: enable statusscreen
+      ansible.builtin.systemd_service:
+        name: statusscreen
+        state: restarted
+        enabled: true

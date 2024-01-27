@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import sys, os, logging, time, argparse
-from waveshare_epd import epd2in13_V4
 from PIL import Image,ImageDraw,ImageFont
+from rpi_status import epd2in13_V4
 from rpi_status import INA219
 from rpi_status import DisplayBuilder
 from rpi_status import Status
@@ -38,7 +38,7 @@ def when():
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-i', '--image', dest='image', action='store_true', help='For debugging purposes, display an image with pillow instead of refreshing the ePaper screen')
-parser.add_argument('-f', '--font', dest='font', default='./resources/DinaRemasterII.ttc', help='Specify path to font file to use.')
+parser.add_argument('-f', '--font', dest='font', default='/usr/share/fonts/xzzycam/DinaRemasterII.ttc', help='Specify path to font file to use.')
 args = parser.parse_args()
 
 try:
