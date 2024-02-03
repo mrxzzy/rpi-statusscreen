@@ -84,16 +84,23 @@ try:
   while True:
 
     buffer.blank()
+
+    # draw the OS stats at the top
     buffer.text_in_spot(0,0,"Bat: %s" % (power_state(ups)))
     buffer.text_in_spot(0,buffer.textheight,"Load: %s" % (load_average()))
     buffer.text_in_spot(0,buffer.textheight * 2, media_usage('/media/dest'))
     buffer.text_in_spot(0,buffer.textheight * 3, when())
 
+    # draw the timelapse gui
     timelapse = Status.In('/tmp/rpi-timelapse.json').get()
     logging.debug(timelapse)
     if timelapse is not False:
       buffer.text_in_spot(0,103,str(timelapse['captures']))
-      buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+
+      if os.path.exists('/tmp/rpi-eclipse.json'):
+        buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+      else:
+        buffer.image_in_spot((0,153),(123,160),timelapse['last_file'])
     else:
       y = 103
       buffer.text_in_spot(0,y,str("No"))
