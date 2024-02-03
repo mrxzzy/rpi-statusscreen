@@ -20,6 +20,12 @@
         line: 'dtparam=i2c_arm=on'
         create: yes
 
+    - name: configure gpio activity led
+      ansible.builtin.lineinfile:
+        path: /boot/config.txt
+        line: 'dtoverlay=act-led,gpio=23,activelow=on'
+        create: yes
+
     - name: install packages
       ansible.builtin.apt:
         pkg:
