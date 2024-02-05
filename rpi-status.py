@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, logging, time, argparse
+import subprocess
 from PIL import Image,ImageDraw,ImageFont
 from rpi_status import epd2in13_V4
 from rpi_status import INA219
@@ -8,15 +9,24 @@ from rpi_status import DisplayBuilder
 from rpi_status import Status
 
 def power_state(ups):
-  power_state = '-'
-  if ups.getCurrent_mA() > 0:
+
+  cur_mA = ups.getCurrent_mA()
+  if cur_mA > 0: 
     power_state = '+'
+  elif cur_mA < 0: 
+    power_state = '-'
+  else:
+    power_state = '|'
 
   p = (ups.getBusVoltage_V() - 3)/1.2 * 100
   if p > 100:
     p = 100
   elif p < 0:
     p = 0
+
+  # surely this is the best place to put logic to shut the system down
+  if(p < 15 and power_state == '-'):
+    call("sudo shutdown --poweroff", shell=True)
 
   return '%s%d%%' % (power_state, p)
 
@@ -79,6 +89,7 @@ try:
 except Exception as e:
   logging.error("init failed: %s" % (e))
   sys.exit(1)
+
 try: 
   epd.displayPartBaseImage(epd.getbuffer(buffer.get()))
   while True:
