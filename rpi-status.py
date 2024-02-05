@@ -10,13 +10,13 @@ from rpi_status import Status
 
 def power_state(ups):
 
-  cur_mA = ups.getCurrent_mA()
-  if cur_mA > 0: 
+  cur_amps = ups.getCurrent_mA()/1000
+  if cur_amps > 0.01: 
     power_state = '+'
-  elif cur_mA < 0: 
+  elif cur_amps < 0: 
     power_state = '-'
   else:
-    power_state = '|'
+    power_state = '='
 
   p = (ups.getBusVoltage_V() - 3)/1.2 * 100
   if p > 100:
@@ -27,6 +27,9 @@ def power_state(ups):
   # surely this is the best place to put logic to shut the system down
   if(p < 15 and power_state == '-'):
     call("sudo shutdown --poweroff", shell=True)
+
+  if power_state == '=':
+    return '100%'
 
   return '%s%d%%' % (power_state, p)
 
