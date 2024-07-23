@@ -26,7 +26,11 @@ def power_state(ups):
 
   # surely this is the best place to put logic to shut the system down
   if(p < 15 and power_state == '-'):
-    call("sudo shutdown --poweroff", shell=True)
+    if not os.path.exists('/tmp/shutting_down'):
+      subprocess.call("sudo shutdown --poweroff", shell=True)
+      f = open('/tmp/shutting_down','w')
+      f.write('hello')
+      f.close()
 
   if power_state == '=':
     return '100%'
@@ -53,10 +57,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--image', dest='image', action='store_true', help='For debugging purposes, display an image with pillow instead of refreshing the ePaper screen')
 parser.add_argument('-f', '--font', dest='font', default='/usr/share/fonts/xzzycam/DinaRemasterII.ttc', help='Specify path to font file to use.')
 parser.add_argument('-s', '--shutdown', action='store_true', help='Run with this option to blank the epaper screen.')
+parser.add_argument('-d', '--debug', action='store_true', dest='verbose')
 args = parser.parse_args()
 
-if args.shutdown:
+if args.verbose:
   logging.basicConfig(level=logging.DEBUG)
+else:
+  logging.basicConfig(level=logging.WARN)
+
+if args.shutdown:
   logging.debug("Blanking e-paper in preparation for shutdown.")
   epd = epd2in13_V4.EPD()
   epd.init()
@@ -65,8 +74,6 @@ if args.shutdown:
   sys.exit(0)
 
 try:
-  logging.basicConfig(level=logging.DEBUG)
-
   logging.debug("Initializing e-paper display")
   if not args.image:
     epd = epd2in13_V4.EPD()
@@ -106,8 +113,12 @@ try:
     buffer.text_in_spot(0,buffer.textheight * 3, when())
 
     # draw the timelapse gui
-    timelapse = Status.In('/tmp/rpi-timelapse.json').get()
-    logging.debug(timelapse)
+    if os.path.exists('/tmp/rpi-timelapse.json'):
+      timelapse = Status.In('/tmp/rpi-timelapse.json').get()
+      logging.debug(timelapse)
+    else:
+      timelapse = False
+
     if timelapse is not False:
       buffer.text_in_spot(0,103,str(timelapse['captures']))
 
