@@ -122,10 +122,15 @@ try:
     if timelapse is not False:
       buffer.text_in_spot(0,103,str(timelapse['captures']))
 
-      if os.path.exists('/tmp/rpi-eclipse.json'):
-        buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+      if os.path.exists(timelapse['last_file']):
+        if os.path.exists('/tmp/rpi-eclipse.json'):
+          buffer.image_in_spot((64,103),(58,58),timelapse['last_file'])
+        else:
+          buffer.image_in_spot((0,153),(123,160),timelapse['last_file'])
       else:
-        buffer.image_in_spot((0,153),(123,160),timelapse['last_file'])
+        y = 103
+        buffer.text_in_spot(64,y, str('No'))
+        buffer.text_in_spot(64,y + buffer.textheight, str("IMG"))
     else:
       y = 103
       buffer.text_in_spot(0,y,str("No"))
